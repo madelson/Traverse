@@ -65,23 +65,28 @@ namespace Medallion.Collections
             );
         }
 
+        /// <summary>
+        /// Notes: we don't have an API for depth-first multi-root traversal since that's the same as concatenation. This test demonstrates
+        /// that we get that same result
+        /// </summary>
         [Test]
         public void TestDepthFirstMultipleRoots()
         {
-            Assert.Throws<ArgumentNullException>(() => Traverse.DepthFirst(default(IEnumerable<string>), _ => Enumerable.Empty<string>()));
-            Assert.Throws<ArgumentNullException>(() => Traverse.DepthFirst(Enumerable.Empty<string>(), default(Func<string, IEnumerable<string>>)));
-
             CollectionAssert.AreEqual(
-                actual: Traverse.DepthFirst(new[] { 3, 5, 4 }, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }),
+                actual: new[] { 3, 5, 4 }.SelectMany(x => Traverse.DepthFirst(x, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 })),
                 expected: new[] { 3, 2, 1, 1, 1, 5, 3, 2, 1, 1, 1, 2, 1, 1, 4, 2, 1, 1, 2, 1, 1 }
             );
         }
 
+        /// <summary>
+        /// Notes: we don't have an API for depth-first multi-root traversal since that's the same as concatenation. This test demonstrates
+        /// that we get that same result
+        /// </summary>
         [Test]
         public void TestDepthFirstMultipleRootsPostOrder()
         {
             CollectionAssert.AreEqual(
-                actual: Traverse.DepthFirst(new[] { 3, 5, 4 }, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }, postOrder: true),
+                actual: new[] { 3, 5, 4 }.SelectMany(x => Traverse.DepthFirst(x, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }, postOrder: true)),
                 expected: new[] { 1, 1, 2, 1, 3, 1, 1, 2, 1, 3, 1, 1, 2, 5, 1, 1, 2, 1, 1, 2, 4 }
             );
         }
@@ -184,7 +189,6 @@ namespace Medallion.Collections
             Assert.IsEmpty(Traverse.Along(default(object), _ => throw new InvalidOperationException("should never get here")));
             Assert.IsEmpty(Traverse.DepthFirst(1, _ => Enumerable.Empty<int>()).Skip(1));
             Assert.IsEmpty(Traverse.BreadthFirst(1, _ => Enumerable.Empty<int>()).Skip(1));
-            Assert.IsEmpty(Traverse.DepthFirst<char>(Enumerable.Empty<char>(), _ => throw new InvalidOperationException("should never get here")));
             Assert.IsEmpty(Traverse.BreadthFirst<char>(Enumerable.Empty<char>(), _ => throw new InvalidOperationException("should never get here")));
         }
 

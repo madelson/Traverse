@@ -16,7 +16,12 @@
     <RootNamespace>Medallion.Collections</RootNamespace>
 
     <PackageId>Traversal</PackageId>
-    <Description>Provides tree-traversal algorithms (e. g. breadth-first and depth-first) that can be used on explicitly or implicitly tree-like datastructures.</Description>
+    <Description>
+        Provides tree-traversal algorithms (e. g. breadth-first and depth-first) that can be used on explicitly or implicitly tree-like datastructures.
+        
+        IEnumerable&lt;DirectoryInfo&gt; childDirectories = Traverse.DepthFirst(new DirectoryInfo(...), d => d.EnumerateDirectories());
+        IEnumerable&lt;DirectoryInfo&gt; parentDirectories = Traverse.Along(new DirectoryInfo(...), d => d.Parent);
+    </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>breadth depth first preorder postorder tree graph traverse traversal enumerable dag</PackageTags>
     <PackageProjectUrl>https://github.com/madelson/Traversal</PackageProjectUrl>

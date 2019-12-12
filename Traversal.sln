@@ -1,0 +1,31 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Traversal", "Traversal\Traversal.csproj", "{AE2F20A6-D2A4-45D2-B49A-86E18FC45155}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Traversal.Tests", "Traversal.Tests\Traversal.Tests.csproj", "{7318FAF6-D990-47B9-A339-AF8F182947ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE2F20A6-D2A4-45D2-B49A-86E18FC45155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE2F20A6-D2A4-45D2-B49A-86E18FC45155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE2F20A6-D2A4-45D2-B49A-86E18FC45155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE2F20A6-D2A4-45D2-B49A-86E18FC45155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7318FAF6-D990-47B9-A339-AF8F182947ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7318FAF6-D990-47B9-A339-AF8F182947ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7318FAF6-D990-47B9-A339-AF8F182947ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7318FAF6-D990-47B9-A339-AF8F182947ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3CC1B0E2-4D9C-4166-8804-984FAF9AFC22}
+	EndGlobalSection
+EndGlobal

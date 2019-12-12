@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -18,79 +19,72 @@ namespace Medallion.Collections
         ///     var allExceptions = Traverse.DepthFirst((Exception)new AggregateException(), e => (e as AggregateException)?.InnerExceptions ?? Enumerable.Empty&lt;Exception&gt;());
         /// </code>
         /// </summary>
-        public static IEnumerable<T> DepthFirst<T>(T root, Func<T, IEnumerable<T>> children, bool postOrder = false)
+        public static IEnumerable<T> DepthFirst<T>(T root, Func<T, IEnumerable<T>> children, bool postOrder = false) =>
+            DepthFirstIterator(new SingleRootEnumerable<T>(root), children ?? throw new ArgumentNullException(nameof(children)), postOrder);
+
+        public static IEnumerable<T> DepthFirst<T>(IEnumerable<T> roots, Func<T, IEnumerable<T>> children, bool postOrder = false) =>
+            DepthFirstIterator(roots ?? throw new ArgumentNullException(nameof(roots)), children ?? throw new ArgumentNullException(nameof(children)), postOrder);
+
+        private static IEnumerable<T> DepthFirstIterator<T>(
+            IEnumerable<T> roots, 
+            Func<T, IEnumerable<T>> children,
+            bool postOrder)
         {
-            if (children == null) { throw new ArgumentNullException(nameof(children)); }
+            // note that this implementation has two nice properties which require a bit more complexity
+            // in the code: (1) children are yielded in order and (2) child enumerators are fully lazy
 
-            return DepthFirstIterator();
+            var stack = new Stack<IEnumerator<T>>();
+            stack.Push(roots.GetEnumerator());
 
-            IEnumerable<T> DepthFirstIterator()
+            try
             {
-                // note that this implementation has two nice properties which require a bit more complexity
-                // in the code: (1) children are yielded in order and (2) child enumerators are fully lazy
-
-                // setup: yield the root for pre-order, then prime the stack with the children of root
-                if (!postOrder)
+                while (true)
                 {
-                    yield return root;
-                }
-                var stack = new Stack<IEnumerator<T>>();
-                stack.Push(children(root).GetEnumerator());
-
-                try
-                {
-                    while (true)
+                    // if the to enumerator has a new element...
+                    var childrenEnumerator = stack.Peek();
+                    if (childrenEnumerator.MoveNext())
                     {
-                        // if the to enumerator has a new element...
-                        var childrenEnumerator = stack.Peek();
-                        if (childrenEnumerator.MoveNext())
+                        var current = childrenEnumerator.Current;
+                        // yield it for pre-order
+                        if (!postOrder)
                         {
-                            var current = childrenEnumerator.Current;
-                            // yield it for pre-order
-                            if (!postOrder)
-                            {
-                                yield return current;
-                            }
-                            // then push it's children
-                            stack.Push(children(current).GetEnumerator());
+                            yield return current;
                         }
-                        else
+                        // then push it's children
+                        stack.Push(children(current).GetEnumerator());
+                    }
+                    else
+                    {
+                        // otherwise, clean up the exhausted enumerator and remove it from the stack
+                        childrenEnumerator.Dispose();
+                        stack.Pop();
+                        if (stack.Count == 0) // done
                         {
-                            // otherwise, clean up the exhausted enumerator and remove it from the stack
-                            childrenEnumerator.Dispose();
-                            stack.Pop();
-                            if (stack.Count == 0) // done
-                            {
-                                if (postOrder) // for post-order, finish with root
-                                {
-                                    yield return root;
-                                }
-                                break;
-                            }
-                            else if (postOrder) // for post-order, yield the current parent on the way back
-                            {
-                                yield return stack.Peek().Current;
-                            }
+                            break;
+                        }
+                        if (postOrder) // for post-order, yield the current parent on the way back
+                        {
+                            yield return stack.Peek().Current;
                         }
                     }
                 }
-                finally
+            }
+            finally
+            {
+                // guarantee that everything is cleaned up even
+                // if we don't enumerate all the way through
+                Exception? lastDisposalException = null;
+                while (stack.Count != 0)
                 {
-                    // guarantee that everything is cleaned up even
-                    // if we don't enumerate all the way through
-                    Exception? lastDisposalException = null;
-                    while (stack.Count != 0)
-                    {
-                        try { stack.Pop()?.Dispose(); }
-                        catch (Exception ex) { lastDisposalException = ex; }
-                    }
+                    try { stack.Pop()?.Dispose(); }
+                    catch (Exception ex) { lastDisposalException = ex; }
+                }
 
-                    // rethrow only the last caught (outermost) disposal exception, mimicking what would
-                    // happen with a bunch of nested using blocks in the case of multiple disposal failures
-                    if (lastDisposalException != null)
-                    {
-                        ExceptionDispatchInfo.Capture(lastDisposalException).Throw();
-                    }
+                // rethrow only the last caught (outermost) disposal exception, mimicking what would
+                // happen with a bunch of nested using blocks in the case of multiple disposal failures
+                if (lastDisposalException != null)
+                {
+                    ExceptionDispatchInfo.Capture(lastDisposalException).Throw();
                 }
             }
         }

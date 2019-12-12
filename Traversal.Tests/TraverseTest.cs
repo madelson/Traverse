@@ -56,6 +56,36 @@ namespace Medallion.Collections
         }
 
         [Test]
+        public void TestDepthFirstPostOrder()
+        {
+            CollectionAssert.AreEqual(
+                actual: Traverse.DepthFirst("abcd", s => s.Length < 2 ? Enumerable.Empty<string>() : new[] { s.Substring(0, s.Length - 1), s.Substring(1) }, postOrder: true),
+                expected: new[] { "a", "b", "ab", "b", "c", "bc", "abc", "b", "c", "bc", "c", "d", "cd", "bcd", "abcd" }
+            );
+        }
+
+        [Test]
+        public void TestDepthFirstMultipleRoots()
+        {
+            Assert.Throws<ArgumentNullException>(() => Traverse.DepthFirst(default(IEnumerable<string>), _ => Enumerable.Empty<string>()));
+            Assert.Throws<ArgumentNullException>(() => Traverse.DepthFirst(Enumerable.Empty<string>(), default(Func<string, IEnumerable<string>>)));
+
+            CollectionAssert.AreEqual(
+                actual: Traverse.DepthFirst(new[] { 3, 5, 4 }, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }),
+                expected: new[] { 3, 2, 1, 1, 1, 5, 3, 2, 1, 1, 1, 2, 1, 1, 4, 2, 1, 1, 2, 1, 1 }
+            );
+        }
+
+        [Test]
+        public void TestDepthFirstMultipleRootsPostOrder()
+        {
+            CollectionAssert.AreEqual(
+                actual: Traverse.DepthFirst(new[] { 3, 5, 4 }, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }, postOrder: true),
+                expected: new[] { 1, 1, 2, 1, 3, 1, 1, 2, 1, 3, 1, 1, 2, 5, 1, 1, 2, 1, 1, 2, 4 }
+            );
+        }
+
+        [Test]
         public void TestBreadthFirst()
         {
             Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst("a", null));
@@ -79,6 +109,24 @@ namespace Medallion.Collections
                     "c",
                     "c",
                     "d",
+                }
+            );
+        }
+
+        [Test]
+        public void TestBreadthFirstMultipleRoots()
+        {
+            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst(default(IEnumerable<string>), _ => Enumerable.Empty<string>()));
+            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst(Enumerable.Empty<string>(), default(Func<string, IEnumerable<string>>)));
+
+            CollectionAssert.AreEqual(
+                actual: Traverse.BreadthFirst(new[] { 3, 5, 4 }, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }),
+                expected: new[] 
+                { 
+                    3, 5, 4, 
+                    2, 1, 3, 2, 2, 2,  
+                    1, 1, 2, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1
                 }
             );
         }
@@ -128,6 +176,18 @@ namespace Medallion.Collections
 
             Assert.AreEqual(helper.EndCount, helper.StartCount);
         }
+
+        [Test]
+        public void TestEmpty()
+        {
+            Assert.IsEmpty(Traverse.Along(default(object), _ => throw new InvalidOperationException("should never get here")));
+            Assert.IsEmpty(Traverse.DepthFirst(1, _ => Enumerable.Empty<int>()).Skip(1));
+            Assert.IsEmpty(Traverse.BreadthFirst(1, _ => Enumerable.Empty<int>()).Skip(1));
+            Assert.IsEmpty(Traverse.DepthFirst<char>(Enumerable.Empty<char>(), _ => throw new InvalidOperationException("should never get here")));
+            Assert.IsEmpty(Traverse.BreadthFirst<char>(Enumerable.Empty<char>(), _ => throw new InvalidOperationException("should never get here")));
+        }
+
+        // multi root breadth and depth
 
         private class EnumeratorHelper
         {

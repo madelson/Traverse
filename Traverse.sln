@@ -1,11 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Traversal", "Traversal\Traversal.csproj", "{AE2F20A6-D2A4-45D2-B49A-86E18FC45155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Traverse", "Traverse\Traverse.csproj", "{AE2F20A6-D2A4-45D2-B49A-86E18FC45155}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Traversal.Tests", "Traversal.Tests\Traversal.Tests.csproj", "{7318FAF6-D990-47B9-A339-AF8F182947ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Traverse.Tests", "Traverse.Tests\Traverse.Tests.csproj", "{7318FAF6-D990-47B9-A339-AF8F182947ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

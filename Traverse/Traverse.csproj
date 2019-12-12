@@ -15,7 +15,7 @@
     <Copyright>Copyright © 2019 Michael Adelson</Copyright>
     <RootNamespace>Medallion.Collections</RootNamespace>
 
-    <PackageId>Traversal</PackageId>
+    <PackageId>Traverse</PackageId>
     <Description>
         Provides tree-traversal algorithms (e. g. breadth-first and depth-first) that can be used on explicitly or implicitly tree-like datastructures.
         
@@ -24,8 +24,8 @@
     </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>breadth depth first preorder postorder tree graph traverse traversal enumerable dag</PackageTags>
-    <PackageProjectUrl>https://github.com/madelson/Traversal</PackageProjectUrl>
-    <PackageReleaseNotes>See https://github.com/madelson/Traversal#release-notes</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/madelson/Traverse</PackageProjectUrl>
+    <PackageReleaseNotes>See https://github.com/madelson/Traverse#release-notes</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">

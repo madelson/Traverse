@@ -1,6 +1,6 @@
-# Traversal
+# Traverse
 
-Traversal is available for download as a [NuGet package](https://www.nuget.org/packages/Traversal). [![NuGet Status](http://img.shields.io/nuget/v/Traversal.svg?style=flat)](https://www.nuget.org/packages/Traversal/)
+Traverse is available for download as a [NuGet package](https://www.nuget.org/packages/Traverse). [![NuGet Status](http://img.shields.io/nuget/v/Traverse.svg?style=flat)](https://www.nuget.org/packages/Traverse/)
 
 [Release notes](#release-notes)
 

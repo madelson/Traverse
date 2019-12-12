@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Traversal\Traversal.csproj" />
+    <ProjectReference Include="..\Traverse\Traverse.csproj" />
   </ItemGroup>
 
 </Project>

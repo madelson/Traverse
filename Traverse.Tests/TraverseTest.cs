@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace Medallion.Collections
+namespace Medallion.Collections.Tests
 {
     public class TraverseTest
     {

@@ -7,7 +7,7 @@ namespace Medallion.Collections
     /// <summary>
     /// Contains utility methods for traversing graph-like datastructures.
     /// 
-    /// See https://github.com/madelson/Traversal
+    /// See https://github.com/madelson/Traverse
     /// </summary>
     public static partial class Traverse
     {

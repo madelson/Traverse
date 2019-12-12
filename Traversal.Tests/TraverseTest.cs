@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -187,7 +188,27 @@ namespace Medallion.Collections
             Assert.IsEmpty(Traverse.BreadthFirst<char>(Enumerable.Empty<char>(), _ => throw new InvalidOperationException("should never get here")));
         }
 
-        // multi root breadth and depth
+        [Test]
+        public void TestHandlingOfEnumeratorDisposalErrors()
+        {
+            var enumerators = new List<ThrowingEnumeratorEnumerable>();
+            var disposalException = Assert.Throws<InvalidOperationException>(
+                () => Traverse.DepthFirst(
+                        5,
+                        i =>
+                        {
+                            var enumerator = i > 0 ? new ThrowingEnumeratorEnumerable(i - 1) : new ThrowingEnumeratorEnumerable();
+                            enumerators.Add(enumerator);
+                            return enumerator;
+                        }
+                    )
+                    .ToArray()
+            );
+            Assert.AreEqual("Throw from 4 dispose", disposalException.Message);
+
+            Assert.AreEqual(6, enumerators.Count);
+            Assert.IsTrue(enumerators.All(e => e.Disposed));
+        }
 
         private class EnumeratorHelper
         {
@@ -212,6 +233,34 @@ namespace Medallion.Collections
                     ++this.EndCount;
                 }
             }
+        }
+
+        private class ThrowingEnumeratorEnumerable : IEnumerable<int>, IEnumerator<int>
+        {
+            private readonly int? _value;
+            private bool _started;
+
+            public ThrowingEnumeratorEnumerable(int? value = null)
+            {
+                this._value = value;
+            }
+
+            public bool Disposed { get; private set; }
+
+            int IEnumerator<int>.Current => this._value ?? throw new InvalidOperationException("Throw from current");
+            object IEnumerator.Current => this._value;
+
+            void IDisposable.Dispose() {
+                this.Disposed = true;
+                throw new InvalidOperationException($"Throw from {this._value} dispose");
+            }
+
+            IEnumerator<int> IEnumerable<int>.GetEnumerator() => this;
+            IEnumerator IEnumerable.GetEnumerator() => this;
+
+            bool IEnumerator.MoveNext() => this._started ? false : (this._started = true);
+
+            void IEnumerator.Reset() => throw new NotSupportedException();
         }
     }
 }

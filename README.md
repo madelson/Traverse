@@ -15,7 +15,7 @@ For example, let's say we wanted to explore the implicit "tree" of an `Exception
 Exception ex = ...;
 var operationCanceledExceptions = Traverse.DepthFirst(
         ex,
-        e => e is AggregateException agg ? agg.InnerExceptions : new[] { e.InnerException }.Where(ie => ie != null)
+        e => e is AggregateException a ? a.InnerExceptions : new[] { e.InnerException }.Where(ie => ie != null)
     )
     .OfType<OperationCanceledException>();
 ```
@@ -31,9 +31,9 @@ List<OperationCanceledException> FindOperationCanceledExceptions(Exception ex)
 	{
 		if (e is OperationCanceledException oce) { result.Add(e); }
 		
-		if (e is AggregateException agg)
+		if (e is AggregateException a)
 		{
-			foreach (var ie in agg.InnerExceptions) { Search(ie); }
+			foreach (var ie in a.InnerExceptions) { Search(ie); }
 		}
 		else if (e.InnerException != null) { Search(e.InnerException); }
 	}

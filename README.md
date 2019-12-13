@@ -14,7 +14,9 @@ For example, let's say we wanted to explore the implicit "tree" of an `Exception
 ```C#
 Exception ex = ...;
 var operationCanceledExceptions = Traverse.DepthFirst(
+		// the tree root
         ex,
+		// a function which maps a tree "node" to its children
         e => e is AggregateException a ? a.InnerExceptions : new[] { e.InnerException }.Where(ie => ie != null)
     )
     .OfType<OperationCanceledException>();
@@ -46,19 +48,17 @@ There are several reasons to use the `Traverse` approach over hand-written recur
 * *More concise*, especially because it can be defined inline
 * *Fully lazy* traversal makes it easy to short-circuit (e. g. with `.First()` or `.Take(n)`)
 * *Can chain other LINQ methods* for further processing because the traversal is abstracted behind `IEnumerable<T>`
-* Not vulnerable to `StackOverflowException`, because no actual recursion is happening
+* *Not vulnerable to `StackOverflowException`*, because no actual recursion is happening
 * *Method of traversal is explicit* (e. g. DFS vs. BFS, preorder vs. postorder) and can be changed without a refactor
-
-, except that **the `Traverse` approach is lazy, can be defined inline and, since it does not use recursion, is not vulnerable to stack overflow**:
 
 ### APIs
 
 The library contains the following traversal methods:
-- DepthFirst: [DFS](https://en.wikipedia.org/wiki/Depth-first_search). Pre-order by default; can be flipped to post-order by passing `postorder: true`.
-- BreadthFirst: [BFS](https://en.wikipedia.org/wiki/Breadth-first_search). Can traverse from one root or from multiple roots.
+- DepthFirst: Implements [DFS](https://en.wikipedia.org/wiki/Depth-first_search). Pre-order by default; can be flipped to post-order by passing `postorder: true`.
+- BreadthFirst: Implements [BFS](https://en.wikipedia.org/wiki/Breadth-first_search). Can traverse from one root or from multiple roots.
 - Along: Traverses along a singly-linked list.
 
-For these examples, assume the following directory structure:
+For example, given the following directory structure:
 ```
 C:\
 C:\a
@@ -67,6 +67,8 @@ C:\a\c
 C:\d
 C:\d\e
 ```
+
+Here's how each API traverses:
 
 ```C#
 // yields C:\, C:\a, C:\a\b, C:\a\c, C:\d, C:\d\e

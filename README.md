@@ -75,7 +75,8 @@ Here's how each API traverses:
 var depthFirst = Traverse.DepthFirst(new DirectoryInfo(@"C:\"), d => d.GetDirectories());
 
 // yields C:\a\b, C:\a\c, C:\a, C:\d\e, C:\d, C:\
-var postorderDepthFirst = Traverse.DepthFirst(new DirectoryInfo(@"C:\"), d => d.GetDirectories(), postorder: true);
+var postorderDepthFirst = 
+	Traverse.DepthFirst(new DirectoryInfo(@"C:\"), d => d.GetDirectories(), postorder: true);
 
 // yields C:\, C:\a, C:\d, C:\a\b, C:\a\c, C:\d\e
 var breadthFirst = Traverse.BreadthFirst(new DirectoryInfo(@"C:\"), d => d.GetDirectories());

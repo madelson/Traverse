@@ -24,6 +24,7 @@ var operationCanceledExceptions = Traverse.DepthFirst(
 
 This is roughly equivalent to the following recursive method, except that **the `Traverse` approach is lazy, can be defined inline and, since it does not use recursion, is not vulnerable to stack overflow**:
 ```C#
+// without using Traverse
 List<OperationCanceledException> FindOperationCanceledExceptions(Exception ex)
 {
 	var result = new List<OperationCanceledException>();
@@ -31,7 +32,8 @@ List<OperationCanceledException> FindOperationCanceledExceptions(Exception ex)
 	void Search(Exception e)
 	{
 		if (e is OperationCanceledException oce) { result.Add(e); }
-		else if (e is AggregateException agg)
+		
+		if (e is AggregateException agg)
 		{
 			foreach (var ie in agg.InnerExceptions) { Search(ie); }
 		}
@@ -41,9 +43,9 @@ List<OperationCanceledException> FindOperationCanceledExceptions(Exception ex)
 ```
 
 The following traversal methods are supported:
-	* [DepthFirst](https://en.wikipedia.org/wiki/Depth-first_search): pre-order by default, but can be flipped to post-order by passing `postOrder: true`
-	* [BreadthFirst] (https://en.wikipedia.org/wiki/Breadth-first_search): can traverse from one root or from multiple roots
-	* Along: traverses along a singly-linked list, e. g. `Traverse.Along(new DirectoryInfo(path), d => d.Parent)`
+- [DepthFirst](https://en.wikipedia.org/wiki/Depth-first_search): pre-order by default, but can be flipped to post-order by passing `postOrder: true`
+- [BreadthFirst](https://en.wikipedia.org/wiki/Breadth-first_search): can traverse from one root or from multiple roots
+- Along: traverses along a singly-linked list, e. g. `Traverse.Along(new DirectoryInfo(path), d => d.Parent)`
 
 
 ## Release notes

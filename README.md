@@ -14,10 +14,10 @@ For example, let's say we wanted to explore the implicit "tree" of an `Exception
 ```C#
 Exception ex = ...;
 var operationCanceledExceptions = Traverse.DepthFirst(
-		ex,
-		e => e is AggregateException agg ? agg.InnerExceptions : new[] { e.InnerException }.Where(ie => ie != null)
-	)
-	.OfType<OperationCanceledException>();
+        ex,
+        e => e is AggregateException agg ? agg.InnerExceptions : new[] { e.InnerException }.Where(ie => ie != null)
+    )
+    .OfType<OperationCanceledException>();
 ```
 
 Without `Traverse`, we might accomplish the same task by writing recursive code like this:

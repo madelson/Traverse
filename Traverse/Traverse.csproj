@@ -17,13 +17,13 @@
 
     <PackageId>Traverse</PackageId>
     <Description>
-        Provides tree-traversal algorithms (e. g. breadth-first and depth-first) that can be used on explicitly or implicitly tree-like datastructures.
-        
-        IEnumerable&lt;DirectoryInfo&gt; childDirectories = Traverse.DepthFirst(new DirectoryInfo(...), d => d.EnumerateDirectories());
-        IEnumerable&lt;DirectoryInfo&gt; parentDirectories = Traverse.Along(new DirectoryInfo(...), d => d.Parent);
+      Explore trees and tree-like structures with LINQ using tree-traversal algorithms like breadth-first and depth-first search:
+
+      IEnumerable&lt;DirectoryInfo&gt; childDirectories = Traverse.DepthFirst(new DirectoryInfo(...), d =&gt; d.EnumerateDirectories());
+      IEnumerable&lt;DirectoryInfo&gt; parentDirectories = Traverse.Along(new DirectoryInfo(...), d =&gt; d.Parent);
     </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>breadth depth first preorder postorder tree graph traverse traversal enumerable dag</PackageTags>
+    <PackageTags>breadth depth first preorder postorder tree graph traverse traversal enumerable dag linq</PackageTags>
     <PackageProjectUrl>https://github.com/madelson/Traverse</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/madelson/Traverse#release-notes</PackageReleaseNotes>
   </PropertyGroup>

@@ -57,10 +57,10 @@ namespace Medallion.Collections.Tests
         }
 
         [Test]
-        public void TestDepthFirstPostOrder()
+        public void TestDepthFirstPostorder()
         {
             CollectionAssert.AreEqual(
-                actual: Traverse.DepthFirst("abcd", s => s.Length < 2 ? Enumerable.Empty<string>() : new[] { s.Substring(0, s.Length - 1), s.Substring(1) }, postOrder: true),
+                actual: Traverse.DepthFirst("abcd", s => s.Length < 2 ? Enumerable.Empty<string>() : new[] { s.Substring(0, s.Length - 1), s.Substring(1) }, postorder: true),
                 expected: new[] { "a", "b", "ab", "b", "c", "bc", "abc", "b", "c", "bc", "c", "d", "cd", "bcd", "abcd" }
             );
         }
@@ -83,10 +83,10 @@ namespace Medallion.Collections.Tests
         /// that we get that same result
         /// </summary>
         [Test]
-        public void TestDepthFirstMultipleRootsPostOrder()
+        public void TestDepthFirstMultipleRootsPostorder()
         {
             CollectionAssert.AreEqual(
-                actual: new[] { 3, 5, 4 }.SelectMany(x => Traverse.DepthFirst(x, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }, postOrder: true)),
+                actual: new[] { 3, 5, 4 }.SelectMany(x => Traverse.DepthFirst(x, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }, postorder: true)),
                 expected: new[] { 1, 1, 2, 1, 3, 1, 1, 2, 1, 3, 1, 1, 2, 5, 1, 1, 2, 1, 1, 2, 4 }
             );
         }

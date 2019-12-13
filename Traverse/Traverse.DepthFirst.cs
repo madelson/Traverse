@@ -10,8 +10,8 @@ namespace Medallion.Collections
     {
         /// <summary>
         /// Enumerates the implicit tree described by <paramref name="root"/> and <paramref name="children"/>
-        /// in a depth-first manner. By default, a pre-order traversal is used (parent before its children), but 
-        /// specifying <paramref name="postOrder"/> will switch to a post-order traversal (children before their parent).
+        /// in a depth-first manner. By default, a preorder traversal is used (parent before its children), but 
+        /// specifying <paramref name="postorder"/> will switch to a postorder traversal (children before their parent).
         /// 
         /// For example, this could be used to enumerate the exceptions of an
         /// <see cref="AggregateException"/>:
@@ -19,7 +19,7 @@ namespace Medallion.Collections
         ///     var allExceptions = Traverse.DepthFirst((Exception)new AggregateException(), e => (e as AggregateException)?.InnerExceptions ?? Enumerable.Empty&lt;Exception&gt;());
         /// </code>
         /// </summary>
-        public static IEnumerable<T> DepthFirst<T>(T root, Func<T, IEnumerable<T>> children, bool postOrder = false)
+        public static IEnumerable<T> DepthFirst<T>(T root, Func<T, IEnumerable<T>> children, bool postorder = false)
         {
             if (children == null) { throw new ArgumentNullException(nameof(children)); }
 
@@ -30,8 +30,8 @@ namespace Medallion.Collections
                 // note that this implementation has two nice properties which require a bit more complexity
                 // in the code: (1) children are yielded in order and (2) child enumerators are fully lazy
 
-                // in pre-order, start by yielding root
-                if (!postOrder)
+                // in preorder, start by yielding root
+                if (!postorder)
                 {
                     yield return root;
                 }
@@ -48,8 +48,8 @@ namespace Medallion.Collections
                         if (childrenEnumerator.MoveNext())
                         {
                             var current = childrenEnumerator.Current;
-                            // yield it for pre-order
-                            if (!postOrder)
+                            // yield it for preorder
+                            if (!postorder)
                             {
                                 yield return current;
                             }
@@ -65,7 +65,7 @@ namespace Medallion.Collections
                             {
                                 break;
                             }
-                            if (postOrder) // for post-order, yield the current parent on the way back
+                            if (postorder) // for postorder, yield the current parent on the way back
                             {
                                 yield return stack.Peek().Current;
                             }
@@ -91,8 +91,8 @@ namespace Medallion.Collections
                     }
                 }
 
-                // if post-order, end by yielding root
-                if (postOrder)
+                // if postorder, end by yielding root
+                if (postorder)
                 {
                     yield return root;
                 }

@@ -13,7 +13,7 @@ namespace Medallion.Collections.Tests
         [Test]
         public void TestAlong()
         {
-            Assert.Throws<ArgumentNullException>(() => Traverse.Along("a", null));
+            Assert.Throws<ArgumentNullException>(() => Traverse.Along("a", null!));
 
             var ex = new Exception("a", new Exception("b", new Exception("c")));
 
@@ -31,7 +31,7 @@ namespace Medallion.Collections.Tests
         [Test]
         public void TestDepthFirst()
         {
-            Assert.Throws<ArgumentNullException>(() => Traverse.DepthFirst("a", null));
+            Assert.Throws<ArgumentNullException>(() => Traverse.DepthFirst("a", null!));
 
             CollectionAssert.AreEqual(
                 actual: Traverse.DepthFirst("abcd", s => s.Length < 2 ? Enumerable.Empty<string>() : new[] { s.Substring(0, s.Length - 1), s.Substring(1) }),
@@ -92,9 +92,41 @@ namespace Medallion.Collections.Tests
         }
 
         [Test]
+        public void TestDepthFirstNullChildren()
+        {
+            // throwing NRE is consistent with SelectMany()
+
+            var enumerable = Traverse.DepthFirst(new[] { 1, 2, 3 }, _ => default(IEnumerable<int[]>)!);
+            Assert.Throws<NullReferenceException>(() => enumerable.ToList());
+        }
+
+        [Test]
+        public void DepthFirstEnumeratorsAreLazyAndDisposeProperly()
+        {
+            var helper = new EnumeratorHelper();
+
+            var sequence = Traverse.DepthFirst(10, i => helper.MakeEnumerator(i - 1));
+
+            Assert.AreEqual(0, helper.IterateCount);
+            Assert.AreEqual(0, helper.StartCount);
+            Assert.AreEqual(0, helper.EndCount);
+
+            using (var enumerator = sequence.GetEnumerator())
+            {
+                for (var i = 0; i < 10; ++i)
+                {
+                    Assert.IsTrue(enumerator.MoveNext());
+                }
+                Assert.AreEqual(9, helper.IterateCount); // -1 for root
+            }
+
+            Assert.AreEqual(helper.EndCount, helper.StartCount);
+        }
+
+        [Test]
         public void TestBreadthFirst()
         {
-            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst("a", null));
+            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst("a", null!));
 
             CollectionAssert.AreEqual(
                 actual: Traverse.BreadthFirst("abcd", s => s.Length < 2 ? Enumerable.Empty<string>() : new[] { s.Substring(0, s.Length - 1), s.Substring(1) }),
@@ -122,8 +154,8 @@ namespace Medallion.Collections.Tests
         [Test]
         public void TestBreadthFirstMultipleRoots()
         {
-            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst(default(IEnumerable<string>), _ => Enumerable.Empty<string>()));
-            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst(Enumerable.Empty<string>(), default(Func<string, IEnumerable<string>>)));
+            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst(default(IEnumerable<string>)!, _ => Enumerable.Empty<string>()));
+            Assert.Throws<ArgumentNullException>(() => Traverse.BreadthFirst(Enumerable.Empty<string>(), default(Func<string, IEnumerable<string>>)!));
 
             CollectionAssert.AreEqual(
                 actual: Traverse.BreadthFirst(new[] { 3, 5, 4 }, i => i <= 1 ? Enumerable.Empty<int>() : new[] { (i / 2) + (i % 2), i / 2 }),
@@ -138,26 +170,15 @@ namespace Medallion.Collections.Tests
         }
 
         [Test]
-        public void DepthFirstEnumeratorsAreLazyAndDisposeProperly()
+        public void TestBreadthFirstNullChildren()
         {
-            var helper = new EnumeratorHelper();
+            // throwing NRE is consistent with SelectMany()
 
-            var sequence = Traverse.DepthFirst(10, i => helper.MakeEnumerator(i - 1));
+            var enumerable1 = Traverse.BreadthFirst(new[] { 1, 2, 3 }, _ => default(IEnumerable<int[]>)!);
+            Assert.Throws<NullReferenceException>(() => enumerable1.ToList());
 
-            Assert.AreEqual(0, helper.IterateCount);
-            Assert.AreEqual(0, helper.StartCount);
-            Assert.AreEqual(0, helper.EndCount);
-
-            using (var enumerator = sequence.GetEnumerator())
-            {
-                for (var i = 0; i < 10; ++i)
-                {
-                    Assert.IsTrue(enumerator.MoveNext());
-                }
-                Assert.AreEqual(9, helper.IterateCount); // -1 for root
-            }
-
-            Assert.AreEqual(helper.EndCount, helper.StartCount);
+            var enumerable2 = Traverse.BreadthFirst(roots: new[] { 1, 2, 3 }, children: _ => default(IEnumerable<int>)!);
+            Assert.Throws<NullReferenceException>(() => enumerable2.ToList());
         }
 
         [Test]
@@ -252,7 +273,7 @@ namespace Medallion.Collections.Tests
             public bool Disposed { get; private set; }
 
             int IEnumerator<int>.Current => this._value ?? throw new InvalidOperationException("Throw from current");
-            object IEnumerator.Current => this._value;
+            object? IEnumerator.Current => this._value;
 
             void IDisposable.Dispose() {
                 this.Disposed = true;

@@ -111,4 +111,5 @@ var distinctTraversal = Traverse.BreadthFirst(root, n => n.Children.Where(visite
 ```
 
 ## Release notes
+- 1.0.1 Fix nullable annotations on `Traverse.Along()`
 - 1.0.0 Initial release
